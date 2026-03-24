@@ -1,0 +1,48 @@
+#include <iostream>
+#include <bitset>
+using namespace std;
+
+// Function to compute 1's complement
+int onesComplement(int num, int bits) {
+    int mask = (1 << bits) - 1; // mask for given bit width
+    return (~num) & mask;
+}
+
+// Function to compute 2's complement
+int twosComplement(int num, int bits) {
+    int mask = (1 << bits) - 1;
+    return ((~num) + 1) & mask;
+}
+
+int main() {
+    int A, B;
+    int bits = 4; // working with 4-bit numbers
+
+    cout << "Enter Minuend (A, 0-15): ";
+    cin >> A;
+    cout << "Enter Subtrahend (B, 0-15): ";
+    cin >> B;
+
+    // 1's Complement Subtraction
+    int onesComp = onesComplement(B, bits);
+    int resultOnes = A + onesComp;
+    if (resultOnes >= (1 << bits)) {
+        // end-around carry
+        resultOnes = (resultOnes & ((1 << bits) - 1)) + 1;
+    }
+    resultOnes &= (1 << bits) - 1;
+
+    // 2's Complement Subtraction
+    int twosComp = twosComplement(B, bits);
+    int resultTwos = (A + twosComp) & ((1 << bits) - 1);
+
+    cout << "\n--- Results ---\n";
+    cout << "A = " << A << " (" << bitset<4>(A) << ")\n";
+    cout << "B = " << B << " (" << bitset<4>(B) << ")\n";
+    cout << "Difference (1's Complement) = " << resultOnes 
+         << " (" << bitset<4>(resultOnes) << ")\n";
+    cout << "Difference (2's Complement) = " << resultTwos 
+         << " (" << bitset<4>(resultTwos) << ")\n";
+
+    return 0;
+}
