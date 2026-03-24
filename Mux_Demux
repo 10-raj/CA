@@ -1,0 +1,37 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+-- Entity Declaration
+entity MUX_DEMUX_RAJ is
+    port(
+        d_in     : in  std_logic_vector(3 downto 0); -- MUX inputs
+        s        : in  std_logic_vector(1 downto 0); -- Select lines
+        x        : in  std_logic;                    -- DEMUX input
+        mux_out  : out std_logic;                    -- MUX output
+        demux_out: out std_logic_vector(3 downto 0)  -- DEMUX outputs
+    );
+end MUX_DEMUX_RAJ;
+
+-- Architecture
+architecture Behavioral of MUX_DEMUX_RAJ is
+begin
+    -- 4x1 Multiplexer
+    mux_out <= d_in(0) when s = "00" else
+               d_in(1) when s = "01" else
+               d_in(2) when s = "10" else
+               d_in(3) when s = "11" else
+               '0';
+
+    -- 1x4 Demultiplexer
+    process(x, s)
+    begin
+        demux_out <= "0000"; -- default
+        case s is
+            when "00" => demux_out(0) <= x;
+            when "01" => demux_out(1) <= x;
+            when "10" => demux_out(2) <= x;
+            when "11" => demux_out(3) <= x;
+            when others => null;
+        end case;
+    end process;
+end Behavioral;
