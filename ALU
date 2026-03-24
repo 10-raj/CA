@@ -1,0 +1,33 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+-- Entity Declaration
+entity ALU_RAJ is
+    port(
+        A, B   : in  std_logic_vector(3 downto 0); -- 4-bit inputs
+        sel    : in  std_logic_vector(1 downto 0); -- Selection line
+        result : out std_logic_vector(3 downto 0)  -- 4-bit output
+    );
+end ALU_RAJ;
+
+-- Architecture
+architecture Behavioral of ALU_RAJ is
+begin
+    process(A, B, sel)
+        variable tempA, tempB, tempResult : unsigned(3 downto 0);
+    begin
+        tempA := unsigned(A);
+        tempB := unsigned(B);
+
+        case sel is
+            when "00" => tempResult := tempA + tempB;   -- Addition
+            when "01" => tempResult := tempA - tempB;   -- Subtraction
+            when "10" => tempResult := tempA and tempB; -- AND
+            when "11" => tempResult := tempA or tempB;  -- OR
+            when others => tempResult := (others => '0');
+        end case;
+
+        result <= std_logic_vector(tempResult);
+    end process;
+end Behavioral;
