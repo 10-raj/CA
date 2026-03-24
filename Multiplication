@@ -1,0 +1,60 @@
+#include <iostream>
+#include <bitset>
+using namespace std;
+
+// Shift-and-Add Multiplication
+int shiftAddMultiply(int A, int B) {
+    int result = 0;
+    for (int i = 0; i < 4; i++) {
+        if ((B >> i) & 1) {
+            result += (A << i);
+        }
+    }
+    return result;
+}
+
+// Booth's Algorithm Multiplication (4-bit signed)
+int boothMultiply(int A, int B) {
+    int m = A; // multiplicand
+    int q = B; // multiplier
+    int q_1 = 0; // previous bit
+    int acc = 0; // accumulator
+    int count = 4; // bit-width
+
+    while (count > 0) {
+        if ((q & 1) == 1 && q_1 == 0) {
+            acc -= m;
+        } else if ((q & 1) == 0 && q_1 == 1) {
+            acc += m;
+        }
+        // Arithmetic right shift of (acc, q, q_1)
+        int combined = (acc << 5) | (q << 1) | q_1;
+        combined >>= 1;
+        acc = combined >> 5;
+        q = (combined >> 1) & 0xF;
+        q_1 = combined & 1;
+        count--;
+    }
+    return (acc << 4) | q;
+}
+
+int main() {
+    int A, B;
+    cout << "Enter A (4-bit number): ";
+    cin >> A;
+    cout << "Enter B (4-bit number): ";
+    cin >> B;
+
+    int prodShift = shiftAddMultiply(A, B);
+    int prodBooth = boothMultiply(A, B);
+
+    cout << "\n--- Results ---\n";
+    cout << "A = " << A << " (" << bitset<4>(A) << ")\n";
+    cout << "B = " << B << " (" << bitset<4>(B) << ")\n";
+    cout << "Shift-Add Product = " << prodShift 
+         << " (" << bitset<8>(prodShift) << ")\n";
+    cout << "Booth Product     = " << prodBooth 
+         << " (" << bitset<8>(prodBooth) << ")\n";
+
+    return 0;
+}
