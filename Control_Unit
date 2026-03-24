@@ -1,0 +1,39 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+-- Entity Declaration
+entity CU_RAJ is
+    port(
+        clk       : in  std_logic;
+        reset     : in  std_logic;
+        state_out : out std_logic_vector(1 downto 0)
+    );
+end CU_RAJ;
+
+-- Architecture
+architecture Behavioral of CU_RAJ is
+    type state_type is (S0, S1, S2, S3);
+    signal state : state_type := S0;
+begin
+    -- State Transition Process
+    process(clk, reset)
+    begin
+        if reset = '1' then
+            state <= S0;
+        elsif rising_edge(clk) then
+            case state is
+                when S0 => state <= S1;
+                when S1 => state <= S2;
+                when S2 => state <= S3;
+                when S3 => state <= S0;
+                when others => state <= S0;
+            end case;
+        end if;
+    end process;
+
+    -- Output Encoding
+    state_out <= "00" when state = S0 else
+                 "01" when state = S1 else
+                 "10" when state = S2 else
+                 "11";
+end Behavioral;
