@@ -1,0 +1,52 @@
+#include <iostream>
+#include <bitset>
+using namespace std;
+
+int main() {
+    int dividend, divisor;
+    cout << "Enter Dividend (0-15): ";
+    cin >> dividend;
+    cout << "Enter Divisor (1-15): ";
+    cin >> divisor;
+
+    // Restoring Division
+    int Qr = 0, Rr = 0;
+    int tempDividend = dividend;
+    for (int i = 3; i >= 0; i--) {
+        Rr = (Rr << 1) | ((tempDividend >> i) & 1);
+        Rr = Rr - divisor;
+        if (Rr < 0) {
+            Rr = Rr + divisor; // restore
+            Qr = Qr & ~(1 << i); // quotient bit = 0
+        } else {
+            Qr = Qr | (1 << i); // quotient bit = 1
+        }
+    }
+
+    // Non-Restoring Division
+    int Qn = 0, Rn = 0;
+    tempDividend = dividend;
+    for (int i = 3; i >= 0; i--) {
+        Rn = (Rn << 1) | ((tempDividend >> i) & 1);
+        if (Rn >= 0) {
+            Rn = Rn - divisor;
+            Qn = Qn | (1 << i);
+        } else {
+            Rn = Rn + divisor;
+            // quotient bit remains 0
+        }
+    }
+    if (Rn < 0) Rn = Rn + divisor; // final correction
+
+    cout << "\n--- Results ---\n";
+    cout << "Dividend = " << dividend << " (" << bitset<4>(dividend) << ")\n";
+    cout << "Divisor  = " << divisor  << " (" << bitset<4>(divisor)  << ")\n";
+    cout << "Restoring Division: Quotient = " << Qr 
+         << " (" << bitset<4>(Qr) << "), Remainder = " << Rr 
+         << " (" << bitset<4>(Rr) << ")\n";
+    cout << "Non-Restoring Division: Quotient = " << Qn 
+         << " (" << bitset<4>(Qn) << "), Remainder = " << Rn 
+         << " (" << bitset<4>(Rn) << ")\n";
+
+    return 0;
+}
