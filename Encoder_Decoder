@@ -1,0 +1,40 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+-- Entity Declaration
+entity EN_DC_RAJ is
+    port(
+        d_in    : in  std_logic_vector(3 downto 0); -- Encoder inputs
+        a_in    : in  std_logic_vector(1 downto 0); -- Decoder inputs
+        enc_out : out std_logic_vector(1 downto 0); -- Encoder outputs
+        dec_out : out std_logic_vector(3 downto 0)  -- Decoder outputs
+    );
+end EN_DC_RAJ;
+
+-- Architecture
+architecture Behavioral of EN_DC_RAJ is
+begin
+    -- 4x2 Encoder
+    process(d_in)
+    begin
+        case d_in is
+            when "0001" => enc_out <= "00";
+            when "0010" => enc_out <= "01";
+            when "0100" => enc_out <= "10";
+            when "1000" => enc_out <= "11";
+            when others => enc_out <= "XX"; -- Invalid
+        end case;
+    end process;
+
+    -- 2x4 Decoder
+    process(a_in)
+    begin
+        case a_in is
+            when "00" => dec_out <= "0001";
+            when "01" => dec_out <= "0010";
+            when "10" => dec_out <= "0100";
+            when "11" => dec_out <= "1000";
+            when others => dec_out <= "0000"; -- Default
+        end case;
+    end process;
+end Behavioral;
