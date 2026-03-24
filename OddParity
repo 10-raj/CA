@@ -1,0 +1,17 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity ODD_PARITY_raj is
+    port(
+        A: in std_logic_vector(3 downto 0);
+        ODD_PARITY: out std_logic
+    );
+end entity ODD_PARITY_raj;
+
+architecture behavioral of ODD_PARITY_raj is
+begin
+    process (A)
+    begin
+        ODD_PARITY <= not (A(3) xor A(2) xor A(1) xor A(0));
+    end process;
+end behavioral;
