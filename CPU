@@ -1,0 +1,55 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+-- Entity Declaration
+entity CPU_RAJ is
+    port(
+        clk    : in  std_logic;
+        reset  : in  std_logic;
+        A, B   : in  std_logic_vector(3 downto 0); -- 4-bit inputs
+        result : out std_logic_vector(3 downto 0)  -- 4-bit output
+    );
+end CPU_RAJ;
+
+-- Architecture
+architecture Behavioral of CPU_RAJ is
+    signal state    : std_logic_vector(1 downto 0) := "00";
+    signal alu_out  : std_logic_vector(3 downto 0);
+begin
+    -- Control Unit Process
+    process(clk, reset)
+    begin
+        if reset = '1' then
+            state <= "00";
+        elsif rising_edge(clk) then
+            case state is
+                when "00" => state <= "01";
+                when "01" => state <= "10";
+                when "10" => state <= "11";
+                when "11" => state <= "00";
+                when others => state <= "00";
+            end case;
+        end if;
+    end process;
+
+    -- ALU Process
+    process(A, B, state)
+        variable tempA, tempB, tempResult : unsigned(3 downto 0);
+    begin
+        tempA := unsigned(A);
+        tempB := unsigned(B);
+
+        case state is
+            when "00" => tempResult := tempA + tempB;   -- Addition
+            when "01" => tempResult := tempA - tempB;   -- Subtraction
+            when "10" => tempResult := tempA and tempB; -- AND
+            when "11" => tempResult := tempA or tempB;  -- OR
+            when others => tempResult := (others => '0');
+        end case;
+
+        alu_out <= std_logic_vector(tempResult);
+    end process;
+
+    result <= alu_out;
+end Behavioral;
